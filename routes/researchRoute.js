@@ -1,5 +1,5 @@
 import express from "express";
-import researchController from "../controllers/researchController";
+import researchController from "../controllers/researchController.js";
 
 const researchRoute = express.Router();
 

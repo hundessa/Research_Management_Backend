@@ -1,10 +1,7 @@
 import bcrypt from "bcryptjs";
 import User from "../models/userModel.js";
 
-const loginController = async (
-  req,
-  res
-) => {
+const loginController = async (req, res) => {
   const { email, password } = req.body;
 
   try {
@@ -21,12 +18,16 @@ const loginController = async (
 
     res.status(200).json({
       message: "Login successful",
+      role: user.role,
       user: {
         id: user._id,
         firstname: user.firstname,
         email: user.email,
+        role: user.role,
       },
     });
+    console.log(user.role);
+    
   } catch (error) {
     console.log("Error during login", error);
     res.status(500).json({ message: "Server error", error: error.message });
