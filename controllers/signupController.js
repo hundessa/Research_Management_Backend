@@ -19,6 +19,7 @@ const signUpController = async (req, res) => {
       email,
       password: hashedPassword,
       role,
+      status: 'active'
     });
 
     res.status(201).json({
