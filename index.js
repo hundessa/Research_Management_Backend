@@ -27,14 +27,20 @@ import directorateNotificationRoute from "./routes/directorate_routes/directorat
 import directorateFinanceRoute from "./routes/directorate_routes/directorateFinanceRoute.js";
 import financeFinanceRoute from "./routes/finance_routes/financeRoutes.js";
 import financeNotificationRoute from "./routes/finance_routes/financeNotificationRoute.js";
+import dotenv from "dotenv";
 
-const uri = "mongodb://localhost:27017/research_management";
+dotenv.config();
+const PORT = process.env.PORT || 4001;
+const CLIENT_URL = process.env.CLIENT_URL;
+const MONGO_URI = process.env.MONGO_URI;
 const app = express();
+
+console.log("ENV MONGO_URI:", process.env.MONGO_URI);
 
 const server = http.createServer(app);
 export const io = new Server(server, {
   cors: {
-    origin: "http://localhost:5173",
+    origin: CLIENT_URL,
     methods: ["GET", "POST", "PUT", "PATCH", "DELETE"],
     credentials: true,
   },
@@ -53,7 +59,7 @@ app.use(bodyParser.json());
 app.use(bodyParser.json({ extended: true }));
 app.use(
   cors({
-    origin: "http://localhost:5173",
+    origin: CLIENT_URL,
     methods: ["GET", "POST", "PUT", "PATCH", "DELETE"],
     credentials: true,
   })
@@ -93,7 +99,7 @@ app.use("/", financeNotificationRoute);
 //   });
 
 mongoose
-  .connect(uri, { useNewUrlParser: true, useUnifiedTopology: true })
+  .connect(MONGO_URI, { useNewUrlParser: true, useUnifiedTopology: true })
   .then(async () => {
     console.log("Connected to MongoDB");
 
@@ -126,6 +132,6 @@ mongoose
     console.log("Error connecting to MongoDB", error);
   });
 
-server.listen(4001, () => {
-  console.log("server listening on port 4001");
+server.listen(PORT, () => {
+  console.log(`server listening on port ${PORT}`);
 });
