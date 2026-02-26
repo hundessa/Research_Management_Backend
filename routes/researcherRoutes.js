@@ -1,0 +1,19 @@
+import express from 'express';
+import { getSingleResearch, researcherResearchList } from '../controllers/researcher_controller/researcherResearchList';
+import { createNotification, getResearcherNotifications } from '../controllers/researcher_controller/researcherNotificationController';
+import { getProgressReports, getResearcherFinanceReleases, submitFinanceRequest, submitProgressReport } from '../controllers/researcher_controller/financeReleaseController';
+import researchController from '../controllers/researchController';
+
+const researcherRoutes = express.Router();
+
+researcherRoutes.post('/research-upload', researchController);
+researcherRoutes.get("/researches", researcherResearchList);
+researcherRoutes.get("/researches/:id", getSingleResearch);
+researcherRoutes.get("/notifications", getResearcherNotifications);
+researcherRoutes.post("/notifications", createNotification);
+researcherRoutes.post("/finance-request-submit", submitFinanceRequest);
+researcherRoutes.get("/finance-requests", getResearcherFinanceReleases);
+researcherRoutes.post("/progress-reports", submitProgressReport);
+researcherRoutes.get("/progress-reports", getProgressReports);
+
+export default researcherRoutes;

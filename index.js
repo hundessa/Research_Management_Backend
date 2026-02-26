@@ -35,6 +35,7 @@ const CLIENT_URL = process.env.CLIENT_URL;
 const MONGO_URI = process.env.MONGO_URI;
 const app = express();
 
+console.log("ENV CLIENT_URL:", process.env.CLIENT_URL);
 console.log("ENV MONGO_URI:", process.env.MONGO_URI);
 
 const server = http.createServer(app);
