@@ -1,6 +1,6 @@
 import express from "express";
-import { approveFinanceRequest, getFinanceRequests } from "../controllers/directorate_controllers/directorateFinanceController";
-import { createNotification, getDirectorateNotifications } from "../controllers/directorate_controllers/directorateNotificationController";
+import { approveFinanceRequest, createNotification, getDirectorateNotifications, getFinanceRequests } from "../controllers/directorateControllers";
+
 
 const directorateRoutes = express.Router();
 

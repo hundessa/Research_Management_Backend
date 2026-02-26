@@ -1,13 +1,12 @@
 import express from "express";
-import { DeanGetResearchById, deanResearchRetrievalController } from "../controllers/dean_controllers/deanResearchRetrievalController";
-import deanStatusUpdateController from "../controllers/dean_controllers/deanStatusUpdateController";
-import { createDeanNotification, getDeanNotificationController } from "../controllers/dean_controllers/deanNotificationController";
+import { deanResearchRetrievalController, deanResearchStatusUpdateController, getDeanNotificationController, createDeanNotification, DeanGetResearchById } from "../controllers/deanControllers.js";
+// import {  } from "../controllers/deanControllers.js";
 
 const deanRoutes = express.Router();
 
 deanRoutes.get("/researches", deanResearchRetrievalController);
 deanRoutes.get("/researches/:id", DeanGetResearchById);
-deanRoutes.patch("/researches/:id/status", deanStatusUpdateController);
+deanRoutes.patch("/researches/:id/status", deanResearchStatusUpdateController);
 deanRoutes.get("/notifications", getDeanNotificationController);
 deanRoutes.post("/notifications", createDeanNotification);
 

@@ -1,6 +1,6 @@
 import express from "express";
-import { approveFinanceRequest, getFinanceRequests } from "../controllers/finance_controllers/financeFinanceController";
-import { getFinanceNotifications, sendFinanceNotification } from "../controllers/finance_controllers/financeNotificationController";
+import { approveFinanceRequest, getFinanceRequests } from "../controllers/directorateControllers.js";
+import { getFinanceNotifications, sendFinanceNotification } from "../controllers/financeControllers.js";
 
 const financeRoutes = express.Router();
 

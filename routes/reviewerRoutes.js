@@ -1,5 +1,5 @@
 import express from "express";
-import { getSingleResearchController, reviewerResearchListController, submitEvaluationController } from "../controllers/reviewer_controller/reviewerResearchListController";
+import { getSingleResearchController, reviewerResearchListController, submitEvaluationController } from "../controllers/reviewerControllers.js";
 
 const reviewerRoutes = express.Router();
 

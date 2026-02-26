@@ -1,6 +1,5 @@
 import express from 'express';
-import { loginController } from '../controllers/loginController';
-import signUpController from '../controllers/signupController';
+import { loginController, signUpController, logoutUser } from '../controllers/authController.js';
 
 authRoutes = express.Router();
 

@@ -1,6 +1,20 @@
 import mongoose from "mongoose";
-import Research from "../../models/researchModel.js";
-import Notification from "../../models/notificationModel.js"
+import User from "../models/userModel.js"
+import Research from "../models/researchModel.js";
+import Notification from "../models/notificationModel.js"
+
+
+
+export const coordinatorUserRetrivalController = async (req, res) => {
+    try {
+        const reviewerUser = await User.find({ role: "reviewer" });
+
+        res.status(200).json(reviewerUser)
+
+    } catch (error) {
+        res.status(500).json({ message: "Server error: ", error });
+    }
+}
 
 export const coordinatorResearchRetrivalController = async (req, res) => {
     try {
@@ -22,7 +36,7 @@ export const coordinatorResearchRetrivalController = async (req, res) => {
 
 
 
-const getCoordinatorSingleResearchController = async (req, res) => {
+export const getCoordinatorSingleResearchController = async (req, res) => {
   const { id } = req.params;
 
   console.log("Fetching research with ID:", id);
@@ -51,7 +65,7 @@ const getCoordinatorSingleResearchController = async (req, res) => {
   }
 };
 
-const assignReviewersController = async (req, res) => {
+export const assignReviewersController = async (req, res) => {
   const { id } = req.params;
   const { status, reviewers } = req.body;
 
@@ -97,7 +111,7 @@ const assignReviewersController = async (req, res) => {
   }
 };
 
-const assignDefenseDateController = async (req, res) => {
+export const assignDefenseDateController = async (req, res) => {
   const { id } = req.params;
   const { defenseDate } = req.body;
 
@@ -162,7 +176,7 @@ const assignDefenseDateController = async (req, res) => {
   }
 };
 
-const getCoordinatorUsersController = async (req, res) => {
+export const getCoordinatorUsersController = async (req, res) => {
   // Placeholder: Implement user fetching logic
   try {
     const users = await mongoose
@@ -178,7 +192,7 @@ const getCoordinatorUsersController = async (req, res) => {
 };
 
 
-const makeFinalDecision = async (req, res) => {
+export const makeFinalDecision = async (req, res) => {
   try {
     const { id } = req.params;
     const { status, decisionComment } = req.body;
@@ -262,10 +276,41 @@ const makeFinalDecision = async (req, res) => {
   }
 };
 
-export {
-  getCoordinatorSingleResearchController,
-  assignReviewersController,
-  assignDefenseDateController,
-  getCoordinatorUsersController,
-  makeFinalDecision
+
+export const sendCoordinatorNotification = async (req, res) => {
+  const { to, message, researchId, recipientRole, title, type, file } = req.body;
+
+  if (!to || !message || !researchId) {
+    return res.status(400).json({ message: "Missing fields" });
+  }
+
+  try {
+    const notification = new Notification({
+      to,
+      message,
+      researchId,
+      title,
+      type,
+      file,
+      recipientRole,
+    });
+
+    await notification.save();
+
+    res.status(201).json({ message: "Notification sent" });
+  } catch (err) {
+    res.status(500).json({ message: err.message });
+  }
+}
+
+
+export const getCoordinatorNotifications = async (req, res) => {
+  try {
+    const notifications = await Notification.find({
+      recipientRole: "coordinator",
+    }).sort({ timestamp: -1 });
+    res.status(200).json(notifications);
+  } catch (err) {
+    res.status(500).json({ message: "Server error", error: err.message });
+  }
 };

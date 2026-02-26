@@ -1,9 +1,9 @@
-import Notification from "../../models/notificationModel.js";
-import FinanceRequest from "../../models/financeReleaseModel.js"
-// Get all finance requests
+import FinanceRequest from "../models/financeReleaseModel";
+import Notification from "../models/notificationModel.js";
+
 export const getFinanceRequests = async (req, res) => {
   try {
-    const requests = await FinanceRequest.find()
+    const requests = await FinanceRequest.find({ status: "approved" })
       .populate("researchId", "researchTitle")
       .populate("researcherId", "name email");
 
@@ -27,7 +27,7 @@ export const approveFinanceRequest = async (req, res) => {
 
     const updatedRequest = await FinanceRequest.findByIdAndUpdate(
       requestId,
-      { status: "approved", approvedAt: new Date() },
+      { status: "proccesed", approvedAt: new Date() },
       { new: true }
     ).populate("researcherId", "name email");
 
@@ -35,7 +35,7 @@ export const approveFinanceRequest = async (req, res) => {
     await Notification.create({
       to: "finance",
       recipientRole: "finance",
-      message: `New approved finance request from ${updatedRequest.researcherId.name} for research: ${updatedRequest.researchId}`,
+      message: `New processed finance request from ${updatedRequest.researcherId.name} for research: ${updatedRequest.researchId}`,
       researchId: updatedRequest.researchId,
       type: "finance_request",
       title: "Finance Request Approval",
@@ -61,5 +61,44 @@ export const approveFinanceRequest = async (req, res) => {
       message: "Failed to approve finance request",
       error: error.message,
     });
+  }
+};
+
+
+export const sendFinanceNotification = async (req, res) => {
+  const { to, message, researchId, recipientRole, title, type, file } = req.body;
+
+  if (!to || !message || !researchId) {
+    return res.status(400).json({ message: "Missing fields" });
+  }
+
+  try {
+    const notification = new Notification({
+      to,
+      message,
+      researchId,
+      title,
+      type,
+      file,
+      recipientRole,
+    });
+
+    await notification.save();
+
+    res.status(201).json({ message: "Notification sent" });
+  } catch (err) {
+    res.status(500).json({ message: err.message });
+  }
+}
+
+
+export const getFinanceNotifications = async (req, res) => {
+  try {
+    const notifications = await Notification.find({
+      recipientRole: "finance",
+    }).sort({ timestamp: -1 });
+    res.status(200).json(notifications);
+  } catch (err) {
+    res.status(500).json({ message: "Server error", error: err.message });
   }
 };

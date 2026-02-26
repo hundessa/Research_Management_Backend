@@ -1,8 +1,5 @@
 import express from 'express';
-import { getSingleResearch, researcherResearchList } from '../controllers/researcher_controller/researcherResearchList';
-import { createNotification, getResearcherNotifications } from '../controllers/researcher_controller/researcherNotificationController';
-import { getProgressReports, getResearcherFinanceReleases, submitFinanceRequest, submitProgressReport } from '../controllers/researcher_controller/financeReleaseController';
-import researchController from '../controllers/researchController';
+import { researchController, researcherResearchList, getSingleResearch, getResearcherNotifications, createNotification, submitFinanceRequest, getResearcherFinanceReleases, submitProgressReport, getProgressReports } from '../controllers/researcherControllers.js';
 
 const researcherRoutes = express.Router();
 
