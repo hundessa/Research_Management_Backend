@@ -1,6 +1,5 @@
 import express from 'express';
-import { coordinatorUserRetrivalController, coordinatorResearchRetrivalController, getCoordinatorSingleResearchController, assignReviewersController, assignDefenseDateController, makeFinalDecision } from '../controllers/coordinatorControllers.js';
-import { getCoordinatorNotifications, sendCoordinatorNotification } from '../controllers/coordinatorNotificationController.js';
+import { coordinatorUserRetrivalController, coordinatorResearchRetrivalController, getCoordinatorSingleResearchController, assignReviewersController, assignDefenseDateController, makeFinalDecision, getCoordinatorNotifications, sendCoordinatorNotification } from '../controllers/coordinatorControllers.js';
 
 const coordinatorRoutes = express.Router();
 

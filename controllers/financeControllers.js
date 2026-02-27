@@ -1,4 +1,4 @@
-import FinanceRequest from "../models/financeReleaseModel";
+import FinanceRequest from "../models/financeReleaseModel.js";
 import Notification from "../models/notificationModel.js";
 
 export const getFinanceRequests = async (req, res) => {

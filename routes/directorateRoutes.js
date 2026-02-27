@@ -1,5 +1,5 @@
 import express from "express";
-import { approveFinanceRequest, createNotification, getDirectorateNotifications, getFinanceRequests } from "../controllers/directorateControllers";
+import { approveFinanceRequest, createNotification, getDirectorateNotifications, getFinanceRequests } from "../controllers/directorateControllers.js";
 
 
 const directorateRoutes = express.Router();

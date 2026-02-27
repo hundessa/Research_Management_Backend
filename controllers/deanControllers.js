@@ -1,4 +1,4 @@
-import researchModel from "../models/researchModel";
+import researchModel from "../models/researchModel.js";
 import Notification from "../models/notificationModel.js";
 
 

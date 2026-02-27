@@ -1,4 +1,4 @@
-import User from "../../models/userModel.js"
+import User from "../models/userModel.js"
 import researchModel from "../models/researchModel.js";
 import Notification from "../models/notificationModel.js";
 

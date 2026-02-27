@@ -1,9 +1,9 @@
 import researchModel from "../models/researchModel.js";
 import Notification from "../models/notificationModel.js";
-import { io } from "../index.js";
 import mongoose from "mongoose";
 import FinanceRelease from "../models/financeReleaseModel.js";
 import ProgressReport from "../models/progressReportModel.js";
+import { io } from "../server/server.js";
 
 export const researchController = async (req, res) => {
   const { researchTitle, researchType, researchFile, status, researcher } = req.body;
