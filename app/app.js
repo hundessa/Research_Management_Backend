@@ -37,6 +37,13 @@ app.use("/reviewer", reviewerRoutes);
 app.use("/finance", financeRoutes);
 app.use("/directorate", directorateRoutes);
 
+// app.all("/*", (req, res, next) => {
+//   next(new AppError(`Can't find ${req.originalUrl}`, 404));
+// });
+app.use((req, res, next) => {
+  next(new AppError(`Can't find ${req.originalUrl}`, 404));
+});
+
 app.use(errorMiddleware);
 
 export default app;
