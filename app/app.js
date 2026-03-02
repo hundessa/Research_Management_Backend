@@ -11,6 +11,7 @@ import financeRoutes from "../routes/financeRoutes.js";
 import directorateRoutes from "../routes/directorateRoutes.js";
 import errorMiddleware from "../middlewares/errorMiddleware.js";
 import { CLIENT_URL } from "../config/config.js";
+import { authMiddleware, authorizeRoles } from "../middlewares/authMiddleware.js";
 
 
 const app = express();
@@ -29,13 +30,13 @@ app.use(
 
 
 app.use("/auth", authRoutes);
-app.use("/researcher", researcherRoutes);
-app.use("/admin", adminRoutes);
-app.use("/dean", deanRoutes);
-app.use("/coordinator", coordinatorRoutes);
-app.use("/reviewer", reviewerRoutes);
-app.use("/finance", financeRoutes);
-app.use("/directorate", directorateRoutes);
+app.use("/researcher", authMiddleware, authorizeRoles("researcher"), researcherRoutes);
+app.use("/admin", authMiddleware, authorizeRoles("admin"), adminRoutes);
+app.use("/dean", authMiddleware, authorizeRoles("dean"), deanRoutes);
+app.use("/coordinator", authMiddleware, authorizeRoles("coordinator"), coordinatorRoutes);
+app.use("/reviewer", authMiddleware, authorizeRoles("reviewer"), reviewerRoutes);
+app.use("/finance", authMiddleware, authorizeRoles("finance"), financeRoutes);
+app.use("/directorate", authMiddleware, authorizeRoles("directorate"), directorateRoutes);
 
 // app.all("/*", (req, res, next) => {
 //   next(new AppError(`Can't find ${req.originalUrl}`, 404));
