@@ -37,19 +37,3 @@ export const getAdminNotifications = asyncHandler(async (req, res) => {
   res.status(200).json(notifications);
 });
 
-// export const sendAdminNotification = asyncHandler(async (req, res) => {
-//   const { to, message, researchId, researcher, title, type, file } = req.body;
-
-//   sendAdminNotificationService({
-//     to,
-//     message,
-//     researchId,
-//     researcher,
-//     title,
-//     type,
-//     file,
-//   });
-
-//   // Temporary response
-//   res.status(201).json({ message: "Notification sent successfully" });
-// });

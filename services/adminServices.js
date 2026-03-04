@@ -73,6 +73,16 @@ export const adminUpdateResearchStatusService = async (id, status) => {
     researchId: id,
   });
 
+  // 1️Create event log
+  await createEvent({
+    actor,                     // req.user._id
+    action: "STATUS_UPDATED",
+    target: research._id,
+    previousState: previousStatus,
+    newState: status,
+    metadata: { researchTitle: research.researchTitle },
+  });
+
   return updatedResearch;
 };
 
@@ -82,27 +92,3 @@ export const getAdminNotificationsService = async () => {
   }).sort({ timestamp: -1 });
   return notifications;
 };
-
-// export const sendAdminNotificationService = async ({
-//   to,
-//   message,
-//   researchId,
-//   researcher,
-//   title,
-//   type,
-//   file,
-// }) => {
-//   const notification = new Notification({
-//     to,
-//     message,
-//     researchId,
-//     researcher,
-//     title,
-//     type,
-//     file,
-//     recipientRole: "admin",
-//   });
-
-//   await notification.save();
-//   return { message: "Notification sent successfully" };
-// };
