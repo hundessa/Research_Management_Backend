@@ -41,26 +41,42 @@ export const adminGetOneResearchService = async (id) => {
   return research;
 };
 
-export const adminUpdateResearchStatusService = async (id, status) => {
+export const adminUpdateResearchStatusService = async (id, status, actorId) => {
+
+  //if there are more than 1 coordinators, we can send notification to the one we choose, for now there is only one coordinator
+  const coordinator = await userModel.findOne({ role: "coordinator" });
+  if (!coordinator) {
+    throw new AppError("No coordinator found to notify", 404);
+  }
+
+  const research = await researchModel.findById(id);
+  if(!research) {
+    throw new AppError("No Research Found", 400)
+  }
+const prevStatus = research.status;
+
   if (!status) {
     throw new AppError("Status is required", 400);
   }
 
   const updatedResearch = await researchModel.findByIdAndUpdate(
-    { _id: id, status: "pending" },
+    // to prevent updating the status of a research that is already accepted or rejected, we can add a condition to check if the current status is pending or underreview before allowing the update
+    // { _id: id, status: "pending" },
+    id,
     { status },
     { new: true },
   );
 
   if (!updatedResearch) {
-    throw new AppError("Research already processed not found", 404);
+    throw new AppError("Research already processed or not found", 404);
   }
 
-  // Send notification to dean if status is accepted
+  // Send notification to coordinator if status is accepted
   if (status === "accepted") {
     await sendNotification({
       message: `Research titled "${updatedResearch.researchTitle}" has been accepted.`,
-      recipientRole: "dean",
+      recipient: coordinator._id,
+      recipientRole: "coordinator",
       researchId: id,
     });
   }
@@ -75,10 +91,10 @@ export const adminUpdateResearchStatusService = async (id, status) => {
 
   // 1️Create event log
   await createEvent({
-    actor,                     // req.user._id
+    actor: actorId,
     action: "STATUS_UPDATED",
     target: research._id,
-    previousState: previousStatus,
+    previousState: prevStatus,
     newState: status,
     metadata: { researchTitle: research.researchTitle },
   });

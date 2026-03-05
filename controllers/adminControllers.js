@@ -22,7 +22,7 @@ export const adminResearchStatusUpdateController = asyncHandler(
     const { id } = req.params;
     const { status } = req.body;
 
-    const updatedResearch = await adminUpdateResearchStatusService(id, status);
+    const updatedResearch = await adminUpdateResearchStatusService(id, status, req.user._id);
     res
       .status(200)
       .json({

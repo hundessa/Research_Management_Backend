@@ -1,5 +1,5 @@
 export const sendNotification = async ({
-  to,
+  recipient,
   message,
   researchId,
   researcher,
@@ -11,7 +11,7 @@ export const sendNotification = async ({
   if (!message || !recipientRole) throw new AppError("Message and recipient role are required", 400);
 
   const notification = new Notification({
-    to,
+    recipient,
     message,
     researchId,
     researcher,

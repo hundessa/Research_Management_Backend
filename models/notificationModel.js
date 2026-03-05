@@ -1,4 +1,3 @@
-// models/notificationModel.js
 import mongoose from "mongoose";
 
 const notificationSchema = new mongoose.Schema({
@@ -6,17 +5,21 @@ const notificationSchema = new mongoose.Schema({
     type: String,
     required: true,
   },
+  recipient: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: "User",
+    required: true,
+  },
   recipientRole: {
     type: String,
     enum: [
         "admin",
-        "dean",
       "researcher",
       "reviewer",
       "coordinator",
       "directorate",
       "finance",
-    ], // you can extend this
+    ], 
     required: true,
   },
   isRead: {

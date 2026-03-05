@@ -19,19 +19,20 @@ const researchSchema = new mongoose.Schema(
       type: String,
       enum: [
         "submitted",
-        "reviewed",
-        "underdefence",
-        "finalized",
-        "pending",
-        "underreview",
         "accepted",
+        "under_review",
+        "reviewed",
+        "defence_scheduled",
+        "defended",
+        "finalized",
         "rejected",
       ],
       required: true,
     },
     researcher: {
-      id: { type: mongoose.Schema.Types.ObjectId, ref: "User", required: true },
-      name: String,
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "User",
+      required: true,
     },
     reviewers: [
       {
@@ -92,7 +93,7 @@ const researchSchema = new mongoose.Schema(
   },
   {
     timestamps: true,
-  }
+  },
 );
 
 export default mongoose.model("Research", researchSchema);
