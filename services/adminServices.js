@@ -2,6 +2,7 @@ import userModel from "../models/userModel";
 import researchModel from "../models/researchModel";
 import Notification from "../models/notificationModel.js";
 import { sendNotification } from "./notificationService.js";
+import { createEvent } from "./eventLogService.js";
 
 export const adminGetAllUsersService = async () => {
   const Users = await userModel.find();

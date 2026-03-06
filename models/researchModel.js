@@ -34,12 +34,14 @@ const researchSchema = new mongoose.Schema(
       ref: "User",
       required: true,
     },
-    reviewers: [
-      {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: "User",
+    reviewers: {
+      type: [mongoose.Schema.Types.ObjectId],
+      ref: "User",
+      validate: {
+        validator: (v) => v.length === 3,
+        message: "Exactly 3 reviewers required",
       },
-    ],
+    },
     preDefenseEvaluations: [
       {
         reviewer: {

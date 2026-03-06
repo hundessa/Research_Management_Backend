@@ -1,5 +1,5 @@
 import asyncHandler from "../utils/asyncHandler.js";
-import { assignDefenseDateService, coordinatorGetAllResearchesService, coordinatorGetNotificationsService, coordinatorGetOneResearchService, makeFinalDecisionService } from "../services/coordinatorServices.js";
+import { assignDefenseDateService, coordinatorAssignReviewersService, coordinatorGetAllResearchesService, coordinatorGetAllUsersService, coordinatorGetNotificationsService, coordinatorGetOneResearchService, makeFinalDecisionService } from "../services/coordinatorServices.js";
 
 
 export const coordinatorGetAllUsersController = asyncHandler( async (req, res) => {
