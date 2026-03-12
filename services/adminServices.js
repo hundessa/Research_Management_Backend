@@ -1,5 +1,5 @@
-import userModel from "../models/userModel";
-import researchModel from "../models/researchModel";
+import userModel from "../models/userModel.js";
+import researchModel from "../models/researchModel.js";
 import Notification from "../models/notificationModel.js";
 import { sendNotification } from "./notificationService.js";
 import { createEvent } from "./eventLogService.js";

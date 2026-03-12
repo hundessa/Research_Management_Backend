@@ -1,7 +1,7 @@
 import mongoose from "mongoose";
-import researchModel from "../models/researchModel";
-import userModel from "../models/userModel";
-import { sendNotification } from "./notificationService";
+import researchModel from "../models/researchModel.js";
+import userModel from "../models/userModel.js";
+import { sendNotification } from "./notificationService.js";
 
 export const coordinatorGetAllUsersService = async () => {
   const users = await userModel.find({ role: "reviewer" });

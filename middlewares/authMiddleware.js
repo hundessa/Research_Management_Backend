@@ -1,7 +1,7 @@
 import jwt from "jsonwebtoken";
-import asyncHandler from "../utils/asyncHandler";
+import asyncHandler from "../utils/asyncHandler.js";
 import { JWT_SECRET } from "../config/config.js";
-import AppError from "../utils/AppError";
+import AppError from "../utils/AppError.js";
 
 
 export const authMiddleware = asyncHandler(async(req, res) => {

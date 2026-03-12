@@ -1,5 +1,5 @@
 import express from 'express';
-import { adminUserRetrievalController, adminResearchesRetrievingController, getResearchById, adminResearchStatusUpdateController, getAdminNotifications, sendAdminNotification } from '../controllers/adminControllers.js';
+import { adminUserRetrievalController, adminResearchesRetrievingController, getResearchById, adminResearchStatusUpdateController, getAdminNotifications } from '../controllers/adminControllers.js';
 
 const adminRoutes = express.Router();
 

@@ -1,9 +1,9 @@
 import mongoose from "mongoose";
-import researchModel from "../models/researchModel";
-import AppError from "../utils/AppError";
-import { createEvent } from "./eventLogService";
-import { sendNotification } from "./notificationService";
-import userModel from "../models/userModel";
+import researchModel from "../models/researchModel.js";
+import AppError from "../utils/AppError.js";
+import { createEvent } from "./eventLogService.js";
+import { sendNotification } from "./notificationService.js";
+import userModel from "../models/userModel.js";
 
 export const reviewerSubmitEvaluationService = async (
   researchId,
