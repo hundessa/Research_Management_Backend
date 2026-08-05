@@ -1,3 +1,5 @@
+import notificationModel from "../models/notificationModel.js";
+
 export const sendNotification = async ({
   recipient,
   message,
@@ -10,7 +12,7 @@ export const sendNotification = async ({
 }) => {
   if (!message || !recipientRole) throw new AppError("Message and recipient role are required", 400);
 
-  const notification = new Notification({
+  const notification = new notificationModel({
     recipient,
     message,
     researchId,

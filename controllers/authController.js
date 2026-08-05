@@ -1,3 +1,4 @@
+import { loginService, signUpService } from "../services/authServices.js";
 import asyncHandler from "../utils/asyncHandler.js";
 
 const signUpController = asyncHandler(async (req, res) => {
@@ -7,15 +8,19 @@ const signUpController = asyncHandler(async (req, res) => {
 
 const loginController = asyncHandler(async (req, res) => {
   const result = await loginService(req.body);
+  console.log("Login result:", result);
+  console.log("Token:", result.token);
   res.cookie("token", result.token, {
-  httpOnly: true,
-  secure: process.env.NODE_ENV === "production",
-  sameSite: "strict",
-  maxAge: 24 * 60 * 60 * 1000, // 1 day
-});
+    httpOnly: true,
+    // secure: process.env.NODE_ENV === "production",
+    secure: false,
+    // sameSite: "strict",
+    sameSite: "lax",
+    maxAge: 24 * 60 * 60 * 1000, // 1 day
+  });
   res.status(200).json(result);
 });
-  
+
 const logoutUser = async (req, res) => {
   res.cookie("jwt", "", {
     httpOnly: true,

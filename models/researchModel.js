@@ -27,6 +27,7 @@ const researchSchema = new mongoose.Schema(
         "finalized",
         "rejected",
       ],
+      default: "submitted",
       required: true,
     },
     researcher: {
@@ -38,7 +39,13 @@ const researchSchema = new mongoose.Schema(
       type: [mongoose.Schema.Types.ObjectId],
       ref: "User",
       validate: {
-        validator: (v) => v.length === 3,
+        validator: function (v) {
+          // allow empty at creation
+          if (!v || v.length === 0) return true;
+
+          // enforce later
+          return v.length === 3;
+        },
         message: "Exactly 3 reviewers required",
       },
     },

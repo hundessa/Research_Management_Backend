@@ -10,6 +10,8 @@ export const connectDB = async () => {
       useUnifiedTopology: true,
     });
     console.log("MongoDB connected ✅");
+    console.log(MONGO_URI);
+    
 
     // Admin seeding
     const existingAdmin = await User.findOne({ role: "admin" });

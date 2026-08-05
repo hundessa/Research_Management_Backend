@@ -3,6 +3,7 @@ import researchModel from "../models/researchModel.js";
 import Notification from "../models/notificationModel.js";
 import { sendNotification } from "./notificationService.js";
 import { createEvent } from "./eventLogService.js";
+import AppError from "../utils/AppError.js";
 
 export const adminGetAllUsersService = async () => {
   const Users = await userModel.find();
@@ -85,7 +86,7 @@ const prevStatus = research.status;
     // Notify Researcher in all status changes
   await sendNotification({
     message: `Your research "${updatedResearch.researchTitle}" status is now "${status}"`,
-    to: updatedResearch.researcher, // user ID
+    recipient: updatedResearch.researcher, // user ID
     recipientRole: "researcher",
     researchId: id,
   });

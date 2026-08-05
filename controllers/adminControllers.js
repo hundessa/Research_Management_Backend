@@ -29,11 +29,13 @@ export const adminResearchStatusUpdateController = asyncHandler(
   async (req, res) => {
     const { id } = req.params;
     const { status } = req.body;
+    const actorId = req.user.id;
 
     const updatedResearch = await adminUpdateResearchStatusService(
       id,
       status,
-      req.user._id,
+      // req.user._id,
+      actorId
     );
     res.status(200).json({
       message: "Research status updated successfully",

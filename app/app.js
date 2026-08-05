@@ -1,5 +1,6 @@
 import express from "express";
 import bodyParser from "body-parser";
+import cookieParser from "cookie-parser";
 import cors from "cors";
 import authRoutes from "../routes/authRoutes.js";
 import researcherRoutes from "../routes/researcherRoutes.js";
@@ -11,6 +12,9 @@ import directorateRoutes from "../routes/directorateRoutes.js";
 import errorMiddleware from "../middlewares/errorMiddleware.js";
 import { CLIENT_URL } from "../config/config.js";
 import { authMiddleware, authorizeRoles } from "../middlewares/authMiddleware.js";
+import AppError from "../utils/AppError.js";
+import notificationRoutes from "../routes/notificationRoutes.js";
+import { getUserNotifications } from "../controllers/notificationControllers.js";
 
 
 const app = express();
@@ -19,6 +23,7 @@ app.use(express.json());
 app.use(bodyParser.json());
 app.use(bodyParser.json({ extended: true }));
 app.use(bodyParser.urlencoded({ extended: true }));
+app.use(cookieParser());
 app.use(
   cors({
     origin: CLIENT_URL,
@@ -35,6 +40,7 @@ app.use("/coordinator", authMiddleware, authorizeRoles("coordinator"), coordinat
 app.use("/reviewer", authMiddleware, authorizeRoles("reviewer"), reviewerRoutes);
 app.use("/finance", authMiddleware, authorizeRoles("finance"), financeRoutes);
 app.use("/directorate", authMiddleware, authorizeRoles("directorate"), directorateRoutes);
+app.use("/notifications", authMiddleware, getUserNotifications);
 
 // app.all("/*", (req, res, next) => {
 //   next(new AppError(`Can't find ${req.originalUrl}`, 404));

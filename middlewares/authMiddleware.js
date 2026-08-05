@@ -4,9 +4,10 @@ import { JWT_SECRET } from "../config/config.js";
 import AppError from "../utils/AppError.js";
 
 
-export const authMiddleware = asyncHandler(async(req, res) => {
+export const authMiddleware = asyncHandler(async(req, res, next) => {
 
     const token = req.cookies?.token;
+    console.log("Cookies received:", req.cookies);
 
     if(!token) {
         throw new AppError("Not logged in", 401);

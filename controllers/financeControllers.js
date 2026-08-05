@@ -1,104 +1,47 @@
-import FinanceRequest from "../models/financeReleaseModel.js";
-import Notification from "../models/notificationModel.js";
+import { financeRequestProcessedService, getFinanceNotificationsService, getFinanceReportService, getFinanceRequestsService } from "../services/financeServices.js";
+import asyncHandler from "../utils/asyncHandler.js";
 
-export const getFinanceRequests = async (req, res) => {
-  try {
-    const requests = await FinanceRequest.find({ status: "approved" })
-      .populate("researchId", "researchTitle")
-      .populate("researcherId", "name email");
+export const getFinanceRequests = asyncHandler(async (req, res) => {
 
-    res.status(200).json({
-      success: true,
-      data: requests,
-    });
-  } catch (error) {
-    res.status(500).json({
-      success: false,
-      message: "Failed to fetch finance requests",
-      error: error.message,
-    });
-  }
-};
+  const requests = await getFinanceRequestsService();
 
-// Approve finance request
-export const approveFinanceRequest = async (req, res) => {
-  try {
-    const { requestId } = req.params;
+  res.status(200).json({
+    success: true,
+    data: requests,
+  });
+});
 
-    const updatedRequest = await FinanceRequest.findByIdAndUpdate(
-      requestId,
-      { status: "proccesed", approvedAt: new Date() },
-      { new: true }
-    ).populate("researcherId", "name email");
+export const financeRequestProcessed = asyncHandler(async (req, res) => {
+  const { researchId } = req.params;
 
-    // Send notification to finance team
-    await Notification.create({
-      to: "finance",
-      recipientRole: "finance",
-      message: `New processed finance request from ${updatedRequest.researcherId.name} for research: ${updatedRequest.researchId}`,
-      researchId: updatedRequest.researchId,
-      type: "finance_request",
-      title: "Finance Request Approval",
-    });
+  const report = await financeRequestProcessedService(researchId);
 
-    // Notify researcher
-    await Notification.create({
-      to: updatedRequest.researcherId._id,
-      recipientRole: "researcher",
-      message: `Your finance request for research ${updatedRequest.researchId} has been approved by the directorate.`,
-      researchId: updatedRequest.researchId,
-      type: "request_approved",
-      title: "Finance Request Approved",
-    });
+  res.status(200).json({
+    success: true,
+    data: report,
+  });
+});
 
-    res.status(200).json({
-      success: true,
-      data: updatedRequest,
-    });
-  } catch (error) {
-    res.status(500).json({
-      success: false,
-      message: "Failed to approve finance request",
-      error: error.message,
-    });
-  }
-};
+export const getFinanceReport = asyncHandler(async (req, res) => {
+  const { researchId } = req.params;
+
+  const report = await getFinanceReportService(researchId);
+
+  res.status(200).json({
+    success: true,
+    data: report,
+  });
+});
 
 
-export const sendFinanceNotification = async (req, res) => {
-  const { to, message, researchId, recipientRole, title, type, file } = req.body;
+export const getFinanceNotifications = asyncHandler(async (req, res) => {
 
-  if (!to || !message || !researchId) {
-    return res.status(400).json({ message: "Missing fields" });
-  }
+  const financeId = req.user.id; 
 
-  try {
-    const notification = new Notification({
-      to,
-      message,
-      researchId,
-      title,
-      type,
-      file,
-      recipientRole,
-    });
+  const notifications = await getFinanceNotificationsService(financeId);
 
-    await notification.save();
-
-    res.status(201).json({ message: "Notification sent" });
-  } catch (err) {
-    res.status(500).json({ message: err.message });
-  }
-}
-
-
-export const getFinanceNotifications = async (req, res) => {
-  try {
-    const notifications = await Notification.find({
-      recipientRole: "finance",
-    }).sort({ timestamp: -1 });
-    res.status(200).json(notifications);
-  } catch (err) {
-    res.status(500).json({ message: "Server error", error: err.message });
-  }
-};
+  res.status(200).json({
+    success: true,
+    data: notifications,
+  });
+});

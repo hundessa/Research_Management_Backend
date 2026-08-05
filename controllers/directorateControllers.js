@@ -1,4 +1,5 @@
 import { approveFinanceRequestService, getDirectorateNotificationService, getFinanceRequestsService, rejectFinanceRequestService } from "../services/directorateServices.js";
+import asyncHandler from "../utils/asyncHandler.js";
 
 export const getFinanceRequests = asyncHandler(async (req, res) => {
 
