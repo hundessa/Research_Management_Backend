@@ -5,7 +5,8 @@ import {
   submitProgressReportService,
   getResearcherFinanceReleasesService,
   getProgressReportsService,
-  getAllResearcherFinanceReleasesService
+  getAllResearcherFinanceReleasesService,
+  submitFinanceService,
 } from "../services/researcherServices.js";
 import asyncHandler from "../utils/asyncHandler.js";
 
@@ -13,9 +14,6 @@ export const researchController = asyncHandler(async (req, res) => {
   const { researchTitle, researchType } = req.body;
   const researcherId = req.user.id;
   const researchFile = req.file;
-
-  console.log("BODY:", req.body);
-  console.log("FILE:", req.file);
 
   const research = await submitResearchService(
     researcherId,
@@ -35,7 +33,6 @@ export const researcherResearchList = asyncHandler( async (req, res) => {
   const page = parseInt(req.query.page) || 1;
   const limit = parseInt(req.query.limit) || 10;
   const sort = req.query.sort || "-createdAt";
-console.log("User ID:", researcherId);
 
   const researches = await researcherResearchListService(researcherId, page, limit, sort);
   res.status(200).json({
@@ -57,7 +54,7 @@ export const getSingleResearch = asyncHandler( async (req, res) => {
 
 export const submitFinanceRequest = asyncHandler( async (req, res) => {
     const { researchId, amount, purpose, bankDetails } = req.body;
-    const researcherId = req.user._id;
+    const researcherId = req.user.id;
     const financeRelease = await submitFinanceService(
       researchId,
       researcherId,
@@ -76,8 +73,6 @@ export const submitFinanceRequest = asyncHandler( async (req, res) => {
 //Get all finance releases for researcher
 export const getAllResearcherFinanceReleases = asyncHandler( async (req, res) => {
     const researcherId  = req.user.id;
-    // const researcherId = req.param;
-    console.log("Researcher ID:", researcherId);
 
     const financeReleases = await getAllResearcherFinanceReleasesService(researcherId);
     res.status(200).json({
@@ -106,16 +101,17 @@ export const submitProgressReport = asyncHandler( async (req, res) => {
       researchId,
       amountSpent,
       report,
-      attachments = [],
     } = req.body;
-    const researcherId = req.user._id
+    const researcherId = req.user.id;
+    // Files uploaded via multipart/form-data — multer populates req.files
+    const attachmentFiles = req.files || [];
 
     const progressReport = await submitProgressReportService(
       researchId,
       researcherId,
-      amountSpent,
+      Number(amountSpent),
       report,
-      attachments
+      attachmentFiles
     );
 
     res.status(201).json({

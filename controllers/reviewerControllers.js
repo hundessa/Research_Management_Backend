@@ -3,7 +3,7 @@ import asyncHandler from "../utils/asyncHandler.js";
 
 export const submitEvaluationController = asyncHandler(async (req, res) => {
  const { researchId } = req.params;
- const reviewerId = req.user._id;
+ const reviewerId = req.user.id;
  const { score, evaluationPhase } = req.body;
 
  const result = await reviewerSubmitEvaluationService(researchId, reviewerId, evaluationPhase, score);
@@ -12,7 +12,7 @@ export const submitEvaluationController = asyncHandler(async (req, res) => {
 
 // Update other controllers to return new fields
 export const reviewerResearchListController = asyncHandler(async (req, res) => {
-  const reviewerId  = req.user._id;
+  const reviewerId  = req.user.id;
 
   const assignedResearches = await getReviewerResearchListService(reviewerId);
   res.status(200).json(assignedResearches);

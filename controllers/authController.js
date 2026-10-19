@@ -8,13 +8,9 @@ const signUpController = asyncHandler(async (req, res) => {
 
 const loginController = asyncHandler(async (req, res) => {
   const result = await loginService(req.body);
-  console.log("Login result:", result);
-  console.log("Token:", result.token);
   res.cookie("token", result.token, {
     httpOnly: true,
-    // secure: process.env.NODE_ENV === "production",
-    secure: false,
-    // sameSite: "strict",
+    secure: process.env.NODE_ENV === "production",
     sameSite: "lax",
     maxAge: 24 * 60 * 60 * 1000, // 1 day
   });
@@ -22,16 +18,15 @@ const loginController = asyncHandler(async (req, res) => {
 });
 
 const logoutUser = async (req, res) => {
-  res.cookie("jwt", "", {
+  res.cookie("token", "", {
     httpOnly: true,
     expires: new Date(0),
+    secure: process.env.NODE_ENV === "production",
+    sameSite: "lax",
   });
 
-  // Set headers to prevent caching
-  res.setHeader(
-    "Cache-Control",
-    "no-store, no-cache, must-revalidate, proxy-revalidate",
-  );
+  // Prevent caching of authenticated responses
+  res.setHeader("Cache-Control", "no-store, no-cache, must-revalidate, proxy-revalidate");
   res.setHeader("Pragma", "no-cache");
   res.setHeader("Expires", "0");
   res.setHeader("Surrogate-Control", "no-store");

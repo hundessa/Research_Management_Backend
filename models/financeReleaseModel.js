@@ -5,13 +5,11 @@ const financeReleaseSchema = new mongoose.Schema({
     type: mongoose.Schema.Types.ObjectId,
     ref: "Research",
     required: true,
-    unique: true,
   },
   researcherId: {
     type: mongoose.Schema.Types.ObjectId,
     ref: "User",
     required: true,
-    unique: true,
   },
   amount: {
     type: Number,

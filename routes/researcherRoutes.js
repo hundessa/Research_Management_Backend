@@ -17,10 +17,10 @@ const researcherRoutes = express.Router();
 researcherRoutes.post("/research-upload", upload.single("researchFile"), researchController);
 researcherRoutes.get("/researches", researcherResearchList);
 researcherRoutes.get("/researches/:id", getSingleResearch);
-// researcherRoutes.get("/notifications", getResearcherNotifications);
 researcherRoutes.post("/finance-request-submit", submitFinanceRequest);
 researcherRoutes.get("/finance-requests", getAllResearcherFinanceReleases);
-researcherRoutes.post("/progress-reports", submitProgressReport);
+researcherRoutes.get("/finance-requests/:researchId", getResearcherFinanceReleases);
+researcherRoutes.post("/progress-reports", upload.array("attachments", 5), submitProgressReport);
 researcherRoutes.get("/progress-reports", getProgressReports);
 
 export default researcherRoutes;

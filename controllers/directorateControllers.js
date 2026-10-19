@@ -14,7 +14,7 @@ export const getFinanceRequests = asyncHandler(async (req, res) => {
 
 export const approveFinanceRequest = asyncHandler(async (req, res) => {
     const { requestId } = req.params;
-    const directorateId = req.user._id; 
+    const directorateId = req.user.id; 
 
     const request = await approveFinanceRequestService(requestId, directorateId);
 
@@ -27,7 +27,7 @@ export const approveFinanceRequest = asyncHandler(async (req, res) => {
 
 export const rejectFinanceRequest = asyncHandler(async (req, res) => {
     const { requestId } = req.params;
-    const directorateId = req.user._id; 
+    const directorateId = req.user.id; 
 
     const request = await rejectFinanceRequestService(requestId, directorateId);
 
@@ -39,7 +39,7 @@ export const rejectFinanceRequest = asyncHandler(async (req, res) => {
 });
 
 export const getDirectorateNotifications = asyncHandler( async (req, res) => {
-    const directorateId = req.user._id;
+    const directorateId = req.user.id;
 
     const notifications = await getDirectorateNotificationService(directorateId);
 

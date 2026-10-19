@@ -9,10 +9,10 @@ import userModel from "../models/userModel.js";
 export const getFinanceRequestsService = async () => {
   const financeRequests = await FinanceRequest.find()
     .populate("researchId", "researchTitle")
-    .populate("researcherId", "name email");
+    .populate("researcherId", "firstname lastname email");
 
   if ( financeRequests.length === 0 ) {
-    throw new AppError("No finance requests found", 404);
+    return [];
   }
 
   return financeRequests;
@@ -24,7 +24,7 @@ export const approveFinanceRequestService = async (requestId, directorateId) => 
     throw new AppError("Invalid request ID", 400);
 
   const request = await FinanceRequest.findById(requestId)
-    .populate("researcherId", "name email")
+    .populate("researcherId", "firstname lastname email")
     .populate("researchId", "researchTitle");
 
   if (!request) throw new AppError("Finance request not found", 404);
@@ -45,7 +45,7 @@ export const approveFinanceRequestService = async (requestId, directorateId) => 
    sendNotification({
     recipient: finance._id,
     recipientRole: "finance",
-    message: `New approved finance request from ${request.researcherId.name} for research: ${request.researchId.researchTitle}`,
+    message: `New approved finance request from ${request.researcherId.firstname} ${request.researcherId.lastname} for research: ${request.researchId.researchTitle}`,
     researchId: request.researchId._id,
     type: "finance_request",
     title: "Finance Request Approval",
@@ -77,7 +77,7 @@ export const rejectFinanceRequestService = async (requestId, directorateId) => {
     throw new AppError("Invalid request ID", 400);
 
   const request = await FinanceRequest.findById(requestId)
-    .populate("researcherId", "name email")
+    .populate("researcherId", "firstname lastname email")
     .populate("researchId", "researchTitle");
 
   if (!request) throw new AppError("Finance request not found", 404);
@@ -122,7 +122,7 @@ export const getDirectorateNotificationService = async (directorateId) => {
       recipient: directorateId,
       recipientRole: "directorate",
     })
-    .sort({ timestamp: -1 })
+    .sort({ createdAt: -1 })
     .limit(50);
 
   return notifications;

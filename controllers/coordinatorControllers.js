@@ -58,7 +58,7 @@ export const makeFinalDecision = asyncHandler( async (req, res) => {
 
 
 export const getCoordinatorNotifications = asyncHandler( async (req, res) => {
-const coordinatorId = req.user._id;
+const coordinatorId = req.user.id;
 const notifications = await coordinatorGetNotificationsService(coordinatorId);
 res.status(200).json(notifications);
 });

@@ -1,13 +1,14 @@
 import mongoose from "mongoose";
 import FinanceRelease from "../models/financeReleaseModel.js";
 import notificationModel from "../models/notificationModel.js";
+import AppError from "../utils/AppError.js";
 import { sendNotification } from "./notificationService.js";
 import { createEvent } from "./eventLogService.js";
 
 
 export const getFinanceRequestsService = async () => {
 
-    const requests = await FinanceRelease.find({ status: "approved" }).populate("researcherId", "name email").populate("researchId", "researchTitle");
+    const requests = await FinanceRelease.find({ status: "approved" }).populate("researcherId", "firstname lastname email").populate("researchId", "researchTitle");
 
     return requests;
   }
@@ -81,8 +82,8 @@ export const financeRequestProcessedService = async(researchId) => {
 }
 
 export const getFinanceNotificationsService = async (financeId) => {
-
-  const notification = await notificationModel.find({ recipient: financeId, recipientRole: "finance" }).sort({ createdAt: -1 });
-
+  const notification = await notificationModel
+    .find({ recipient: financeId, recipientRole: "finance" })
+    .sort({ createdAt: -1 });
   return notification;
 }

@@ -31,6 +31,13 @@ const errorMiddleware = (err, req, res, next) => {
       message: "Something went wrong",
     });
   }
+
+  // Fallback for any other NODE_ENV (e.g. "test" or undefined)
+  console.error("UNHANDLED ERROR:", err);
+  return res.status(err.statusCode).json({
+    status: err.status,
+    message: err.message,
+  });
 };
 
 export default errorMiddleware;

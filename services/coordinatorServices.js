@@ -1,6 +1,8 @@
 import mongoose from "mongoose";
 import researchModel from "../models/researchModel.js";
 import userModel from "../models/userModel.js";
+import notificationModel from "../models/notificationModel.js";
+import AppError from "../utils/AppError.js";
 import { sendNotification } from "./notificationService.js";
 
 export const coordinatorGetAllUsersService = async () => {
@@ -141,7 +143,7 @@ export const makeFinalDecisionService = async (id, decision) => {
 };
 
 export const coordinatorGetNotificationsService = async (coordinatorId) => {
-  const notifications = await Notification.find({
+  const notifications = await notificationModel.find({
     recipient: coordinatorId,
   }).sort({ createdAt: -1 });
   return notifications;

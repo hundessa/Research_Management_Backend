@@ -95,7 +95,7 @@ export const getReviewerResearchListService = async (reviewerId) => {
       reviewers: reviewerId,
       status: { $in: ["under_review", "defence_scheduled"] },
     })
-    .populate("researcher.id", "firstname lastname email")
+    .populate("researcher", "firstname lastname email")
     .sort({ createdAt: -1 });
 
   return assignedResearches;
@@ -108,7 +108,7 @@ export const getSingleResearchService = async (id) => {
 
   const research = await researchModel
     .findById(id)
-    .populate("researcher.id", "firstname lastname email")
+    .populate("researcher", "firstname lastname email")
     .populate("preDefenseEvaluations.reviewer", "firstname lastname email")
     .populate("postDefenseEvaluations.reviewer", "firstname lastname email");
   if (!research) {

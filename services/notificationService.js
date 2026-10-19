@@ -1,4 +1,5 @@
 import notificationModel from "../models/notificationModel.js";
+import AppError from "../utils/AppError.js";
 
 export const sendNotification = async ({
   recipient,

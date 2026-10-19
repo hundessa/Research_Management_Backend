@@ -86,14 +86,6 @@ export const submitResearchService = async (
     // 6. Commit
     await session.commitTransaction();
 
-    // 7. Send external notification after commit
-    await sendNotification({
-      recipient: admin._id,
-      recipientRole: "admin",
-      message: `New research "${researchTitle}" has been submitted.`,
-      researchId: createdResearch._id,
-    });
-
     return createdResearch;
 
   } catch (error) {
@@ -209,31 +201,35 @@ export const submitFinanceService = async (
   ) {
     throw new AppError("Invalid bank details provided", 400);
   }
-  if (error.code === 11000) {
-    throw new AppError("Finance release already exists", 400);
-  }
 
-  const financeRelease = await FinanceRelease.create({
-    researchId,
-    researcherId,
-    amount,
-    purpose,
-    bankDetails: parsedBankDetails,
-  });
-
-  const directorate = await userModel
-    .findOne({ role: "directorate" })
-    .select("_id");
-  if (directorate) {
-    await sendNotification({
-      recipient: directorate._id,
-      recipientRole: "directorate",
-      message: `A new finance release has been submitted for research ${researchId} by researcher ${researcherId}.`,
+  try {
+    const financeRelease = await FinanceRelease.create({
       researchId,
+      researcherId,
+      amount,
+      purpose,
+      bankDetails: parsedBankDetails,
     });
-  }
 
-  return financeRelease;
+    const directorate = await userModel
+      .findOne({ role: "directorate" })
+      .select("_id");
+    if (directorate) {
+      await sendNotification({
+        recipient: directorate._id,
+        recipientRole: "directorate",
+        message: `A new finance release has been submitted for research ${researchId} by researcher ${researcherId}.`,
+        researchId,
+      });
+    }
+
+    return financeRelease;
+  } catch (error) {
+    if (error.code === 11000) {
+      throw new AppError("A finance release already exists for this research", 400);
+    }
+    throw error;
+  }
 };
 
 export const getAllResearcherFinanceReleasesService = async (researcherId) => {
@@ -271,7 +267,7 @@ export const submitProgressReportService = async (
   researcherId,
   amountSpent,
   report,
-  attachments = [],
+  attachmentFiles = [],
 ) => {
   if (!researchId || !researcherId || amountSpent === undefined || !report) {
     throw new AppError("All fields are required", 400);
@@ -285,13 +281,15 @@ export const submitProgressReportService = async (
   if (typeof amountSpent !== "number" || amountSpent < 0) {
     throw new AppError("Amount spent must be a non-negative number", 400);
   }
-  attachments.forEach((file) => {
-    if (file.mimetype !== "application/pdf") {
-      throw new AppError("Attachments must be PDF files", 400);
-    }
-  });
 
-  const uploadedAttachements = await uploadFileService(attachments);
+  // Upload each attachment to Supabase and collect public URLs + paths for cleanup
+  const uploadedFiles = [];
+  for (const file of attachmentFiles) {
+    const result = await uploadFileService(file);
+    uploadedFiles.push(result);
+  }
+  const attachmentUrls = uploadedFiles.map((f) => f.fileUrl);
+  const uploadedPaths = uploadedFiles.map((f) => f.filePath);
 
   const session = await mongoose.startSession();
   session.startTransaction();
@@ -301,9 +299,9 @@ export const submitProgressReportService = async (
       {
         researchId,
         researcherId,
-        amountSpent: Number(amountSpent),
+        amountSpent,
         report,
-        attachments,
+        attachments: attachmentUrls,
       },
       { session },
     );
@@ -317,13 +315,12 @@ export const submitProgressReportService = async (
     }
 
     await notificationModel.create(
-      {
+      [{
         recipient: financeHead._id,
         recipientRole: "finance",
         message: `A new progress report has been submitted for research ${researchId} by researcher ${researcherId}.`,
         researchId,
-        progressReportId: progressReport._id,
-      },
+      }],
       { session },
     );
 
@@ -340,21 +337,14 @@ export const submitProgressReportService = async (
     await session.commitTransaction();
     session.endSession();
 
-    await sendNotification({
-      recipient: financeHead._id,
-      recipientRole: "finance",
-      message: `A new progress report has been submitted for research ${researchId} by researcher ${researcherId}.`,
-      researchId,
-      progressReportId: progressReport._id,
-    });
-
     return progressReport;
   } catch (error) {
     await session.abortTransaction();
     session.endSession();
 
-    if (uploadedAttachements?.filePath) {
-      await deleteFileService(uploadedAttachements.filePath);
+    // Clean up any uploaded files on transaction failure
+    for (const filePath of uploadedPaths) {
+      await deleteFileService(filePath).catch(() => {});
     }
 
     throw error;
