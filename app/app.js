@@ -19,6 +19,10 @@ import { getUserNotifications } from "../controllers/notificationControllers.js"
 
 const app = express();
 
+app.get("/health", (req, res) => {
+  res.status(200).json({ status: "ok" });
+});
+
 app.use(express.json());
 app.use(bodyParser.json());
 app.use(bodyParser.json({ extended: true }));
